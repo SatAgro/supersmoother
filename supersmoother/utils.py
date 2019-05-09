@@ -178,7 +178,11 @@ def linear_smooth(t, y, dy, span=None, cv=True,
     denominator = (w * ttw - tw * tw)
     slope = (tyw * w - tw * yw)
     intercept = (ttw * yw - tyw * tw)
-
+    # Solve issues with denominator at start and en of given timeseries.
+    if denominator[0] == 0.0:
+        denominator[0] = denominator[1]
+    if denominator[-1] == 0.0:
+        denominator[-1] = denominator[-2]
     if np.any(denominator == 0):
         raise ValueError("Zero denominator in linear smooth. This usually "
                          "indicates that the input contains duplicate points.")
